@@ -65,12 +65,14 @@ describe('Sui Cross-Pool Arbitrage Engine Test Suite', () => {
     expect(output).toBeLessThan(30_000_000_000n);
   });
 
-  it('should calculate DeepBook V3 CLOB swap output by walking order depth', () => {
+  it('should calculate DeepBook V3 CLOB swap output by walking order depth with decimal scaling', () => {
     const mockDeepBook: PoolState = {
       id: '0xmock_deepbook',
       protocol: 'DEEPBOOK_V3',
       coinA: '0x2::sui::SUI',
       coinB: '0xUSDC',
+      coinADecimals: 9,
+      coinBDecimals: 6,
       reserveA: 1_000_000_000_000n,
       reserveB: 3_000_000_000_000n,
       feeBps: 10,
@@ -81,45 +83,34 @@ describe('Sui Cross-Pool Arbitrage Engine Test Suite', () => {
       midPrice: 3.05,
     };
 
+    // 1 SUI input (1,000,000,000 MIST). Fee 10 bps -> 0.999 SUI effective. Bid price 3.0 USDC/SUI.
+    // 0.999 SUI * 3.0 USDC/SUI = 2.997 USDC = 2,997,000 USDC raw units (6 decimals).
     const res = calculateDeepBookSwapOutput(mockDeepBook, '0x2::sui::SUI', 1_000_000_000n);
-    expect(res.outputAmount).toBeGreaterThan(0n);
-    expect(res.feeAmount).toBeGreaterThan(0n);
+    expect(res.outputAmount).toBe(2_997_000n);
+    expect(res.feeAmount).toBe(1_000_000n);
     expect(res.isDeepFee).toBe(true);
+
+    // Swap quote back to base (USDC -> SUI)
+    // 2.997 USDC input (2,997,000 raw units). Fee 10 bps -> 2,994,003 raw units. Ask price 3.1 USDC/SUI.
+    // (2,994,003 / 3.1) * 10^3 = 965,807,419 MIST (~0.9658 SUI).
+    const resBack = calculateDeepBookSwapOutput(mockDeepBook, '0xUSDC', 2_997_000n);
+    expect(resBack.outputAmount).toBe(965_807_419n);
   });
 
-  it('should identify profitable cross-pool arbitrage opportunities between DeepBook V3 and CLMM/AMM', async () => {
-    const suiCoin = '0x2::sui::SUI';
-    const usdcCoin = '0xUSDC';
+  it('should identify Route 3 (Cetus -> Turbos) as top opportunity and exclude unprofitable DeepBook routes', async () => {
+    const clients = createSuiClients();
+    const pools = await discoverPoolsForCoin(clients, '0x2::sui::SUI');
+    const opps = await calculateArbitrageOpportunities('0x2::sui::SUI', pools, 10_000_000_000n, clients);
 
-    const pools: PoolState[] = [
-      {
-        id: '0xcheap_sui_pool',
-        protocol: 'DEEPBOOK_V3',
-        coinA: suiCoin,
-        coinB: usdcCoin,
-        reserveA: 10_000_000_000_000n,
-        reserveB: 10_000_000_000_000n, // ~1 USDC / SUI
-        feeBps: 10,
-        health: { isPaused: false, isDestroyed: false, hasSufficientLiquidity: true, isVersionSupported: true, isValid: true },
-        bids: [{ price: 3.5, quantity: 1000 }],
-        asks: [{ price: 2.0, quantity: 1000 }],
-        midPrice: 2.0,
-      },
-      {
-        id: '0xexpensive_sui_pool',
-        protocol: 'CETUS_CLMM',
-        coinA: suiCoin,
-        coinB: usdcCoin,
-        reserveA: 1_000_000_000_000n,
-        reserveB: 4_000_000_000_000n, // ~4 USDC / SUI
-        feeBps: 10,
-        health: { isPaused: false, isDestroyed: false, hasSufficientLiquidity: true, isVersionSupported: true, isValid: true },
-      },
-    ];
-
-    const opps = await calculateArbitrageOpportunities(suiCoin, pools, 10_000_000_000n);
     expect(opps.length).toBeGreaterThan(0);
-    expect(opps[0].netProfit).toBeGreaterThan(0n);
-    expect(opps[0].healthCheckConfirmLogs.length).toBeGreaterThan(0);
+    const top = opps[0];
+
+    // Top opportunity must be Cetus -> Turbos (Route 3)
+    expect(top.sourcePool.protocol).toBe('CETUS_CLMM');
+    expect(top.targetPool.protocol).toBe('TURBOS_CLMM');
+    expect(top.roiPercentage).toBeGreaterThan(2.0);
+    expect(top.roiPercentage).toBeLessThan(3.0);
+    expect(top.netProfit).toBeGreaterThan(200_000_000n); // ~0.21 SUI
+    expect(top.healthCheckConfirmLogs.length).toBeGreaterThan(0);
   });
 });
