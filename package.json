@@ -1,0 +1,23 @@
+{
+  "name": "sui-arbitrage-engine",
+  "version": "1.0.0",
+  "description": "Cross-pool arbitrage engine for Sui Mainnet using DeepBook V3 and CLMM/AMM DEXs",
+  "type": "module",
+  "main": "dist/cli.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node --loader ts-node/esm src/cli.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mysten/deepbook-v3": "^2.6.4",
+    "@mysten/sui": "^2.35.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
