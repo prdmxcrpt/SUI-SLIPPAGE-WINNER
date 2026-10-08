@@ -48,6 +48,20 @@ describe('Sui Cross-Pool Arbitrage Engine Test Suite', () => {
     });
   });
 
+  it('should discover active CHILLBULL pools and compute arbitrage opportunities', async () => {
+    const clients = createSuiClients();
+    const chillbullCoin = '0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL';
+    const pools = await discoverPoolsForCoin(clients, chillbullCoin);
+    expect(pools.length).toBeGreaterThan(0);
+    pools.forEach((p) => {
+      expect(p.health.isValid).toBe(true);
+      expect(p.coinA === chillbullCoin || p.coinB === chillbullCoin).toBe(true);
+    });
+
+    const opps = await calculateArbitrageOpportunities(chillbullCoin, pools, 10_000_000_000n, clients);
+    expect(Array.isArray(opps)).toBe(true);
+  });
+
   it('should calculate swap output accurately for standard AMM curve with fees', () => {
     const mockPool: PoolState = {
       id: '0xmock_amm',
