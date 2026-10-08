@@ -120,6 +120,8 @@ export async function discoverPoolsForCoin(
       protocol: 'DEEPBOOK_V3',
       coinA: '0x2::sui::SUI',
       coinB: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN', // USDC
+      coinADecimals: 9,
+      coinBDecimals: 6,
       reserveA: 500_000_000_000n, // 500 SUI
       reserveB: 1_500_000_000n,    // 1500 USDC
       feeBps: 10,                  // 0.10% Taker Fee
@@ -155,6 +157,8 @@ export async function discoverPoolsForCoin(
       protocol: 'CETUS_CLMM',
       coinA: '0x2::sui::SUI',
       coinB: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN',
+      coinADecimals: 9,
+      coinBDecimals: 6,
       reserveA: 1_000_000_000_000n, // 1000 SUI
       reserveB: 3_100_000_000n,      // 3100 USDC (~3.10 USD/SUI)
       feeBps: 25,                    // 0.25%
@@ -173,6 +177,8 @@ export async function discoverPoolsForCoin(
       protocol: 'TURBOS_CLMM',
       coinA: '0x2::sui::SUI',
       coinB: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN',
+      coinADecimals: 9,
+      coinBDecimals: 6,
       reserveA: 800_000_000_000n,
       reserveB: 2_360_000_000n,      // ~2.95 USD/SUI
       feeBps: 30,
@@ -189,6 +195,8 @@ export async function discoverPoolsForCoin(
       protocol: 'KRIYA_CLMM',
       coinA: '0x2::sui::SUI',
       coinB: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN',
+      coinADecimals: 9,
+      coinBDecimals: 6,
       reserveA: 500_000_000_000n,
       reserveB: 1_500_000_000n,
       feeBps: 20,

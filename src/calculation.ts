@@ -27,13 +27,17 @@ export function calculateSwapOutput(
 
 /**
  * Calculates output amount for DeepBook V3 CLOB pools walking order depth (asks/bids).
+ * Correctly handles coin decimals normalization between Base (Coin A) and Quote (Coin B).
  */
 export function calculateDeepBookSwapOutput(
   pool: PoolState,
   inputCoinType: string,
   inputAmount: bigint
 ): { outputAmount: bigint; feeAmount: bigint; isDeepFee: boolean } {
-  const isCoinAInput = pool.coinA === inputCoinType; // Selling Coin A for Coin B (market sell -> bids)
+  const isCoinAInput = pool.coinA === inputCoinType; // Selling Coin A (Base) for Coin B (Quote)
+  const decimalsA = pool.coinADecimals ?? 9;
+  const decimalsB = pool.coinBDecimals ?? 6;
+
   const feeBps = BigInt(pool.feeBps);
   const feeAmount = (inputAmount * feeBps) / 10000n;
   const effectiveInput = inputAmount - feeAmount;
@@ -46,10 +50,11 @@ export function calculateDeepBookSwapOutput(
     const bids = pool.bids ?? [{ price: pool.midPrice || 3.0, quantity: 1000000 }];
     for (const level of bids) {
       const levelPrice = level.price;
-      const levelQtyMIST = BigInt(Math.floor(level.quantity * 1e9));
+      const levelQtyRaw = BigInt(Math.floor(level.quantity * Math.pow(10, decimalsA)));
 
-      const fillQty = remainingBase < levelQtyMIST ? remainingBase : levelQtyMIST;
-      const quoteReceived = BigInt(Math.floor(Number(fillQty) * levelPrice));
+      const fillQty = remainingBase < levelQtyRaw ? remainingBase : levelQtyRaw;
+      const quoteFactor = Math.pow(10, decimalsB - decimalsA);
+      const quoteReceived = BigInt(Math.floor(Number(fillQty) * levelPrice * quoteFactor));
 
       accumulatedQuote += quoteReceived;
       remainingBase -= fillQty;
@@ -59,7 +64,8 @@ export function calculateDeepBookSwapOutput(
 
     // Fallback if remaining base left over
     if (remainingBase > 0n && pool.midPrice) {
-      accumulatedQuote += BigInt(Math.floor(Number(remainingBase) * pool.midPrice));
+      const quoteFactor = Math.pow(10, decimalsB - decimalsA);
+      accumulatedQuote += BigInt(Math.floor(Number(remainingBase) * pool.midPrice * quoteFactor));
     }
 
     return {
@@ -77,9 +83,10 @@ export function calculateDeepBookSwapOutput(
       const levelPrice = level.price;
       if (levelPrice === 0) continue;
 
-      const levelQuoteCap = BigInt(Math.floor(level.quantity * levelPrice * 1e9));
-      const fillQuote = remainingQuote < levelQuoteCap ? remainingQuote : levelQuoteCap;
-      const baseReceived = BigInt(Math.floor(Number(fillQuote) / levelPrice));
+      const levelQuoteCapRaw = BigInt(Math.floor(level.quantity * levelPrice * Math.pow(10, decimalsB)));
+      const fillQuote = remainingQuote < levelQuoteCapRaw ? remainingQuote : levelQuoteCapRaw;
+      const baseFactor = Math.pow(10, decimalsA - decimalsB);
+      const baseReceived = BigInt(Math.floor((Number(fillQuote) / levelPrice) * baseFactor));
 
       accumulatedBase += baseReceived;
       remainingQuote -= fillQuote;
@@ -88,7 +95,8 @@ export function calculateDeepBookSwapOutput(
     }
 
     if (remainingQuote > 0n && pool.midPrice && pool.midPrice > 0) {
-      accumulatedBase += BigInt(Math.floor(Number(remainingQuote) / pool.midPrice));
+      const baseFactor = Math.pow(10, decimalsA - decimalsB);
+      accumulatedBase += BigInt(Math.floor((Number(remainingQuote) / pool.midPrice) * baseFactor));
     }
 
     return {
