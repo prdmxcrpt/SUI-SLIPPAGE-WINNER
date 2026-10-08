@@ -1,0 +1,163 @@
+{
+  "selectedCoin": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+  "capitalDeploymentMist": "10000000000",
+  "opportunitiesFound": 1,
+  "topOpportunity": {
+    "targetCoin": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+    "sourcePool": {
+      "id": "0xcetus_chillbull_sui_pool_id",
+      "protocol": "CETUS_CLMM",
+      "coinA": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+      "coinB": "0x2::sui::SUI",
+      "reserveA": "1000000000000",
+      "reserveB": "15000000000000",
+      "feeBps": 25,
+      "health": {
+        "isPaused": false,
+        "isDestroyed": false,
+        "hasSufficientLiquidity": true,
+        "isVersionSupported": true,
+        "isValid": true
+      }
+    },
+    "targetPool": {
+      "id": "0xdeepbook_chillbull_sui_pool_id",
+      "protocol": "DEEPBOOK_V3",
+      "coinA": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+      "coinB": "0x2::sui::SUI",
+      "reserveA": "1000000000000",
+      "reserveB": "10000000000000",
+      "feeBps": 10,
+      "health": {
+        "isPaused": false,
+        "isDestroyed": false,
+        "hasSufficientLiquidity": true,
+        "isVersionSupported": true,
+        "isValid": true
+      },
+      "deepbookParams": {
+        "tickSize": "1000",
+        "lotSize": "1000000",
+        "minSize": "10000000"
+      },
+      "vaultBalances": {
+        "baseBalance": "1000000000000",
+        "quoteBalance": "10000000000000",
+        "deepBalance": "100000000000"
+      },
+      "midPrice": 10,
+      "bids": [
+        {
+          "price": 9.9,
+          "quantity": 1000
+        }
+      ],
+      "asks": [
+        {
+          "price": 10.1,
+          "quantity": 1000
+        }
+      ]
+    },
+    "optimalInputAmount": "10000000000",
+    "expectedOutputAmount": "14653374666",
+    "tradingFees": {
+      "sourceFeeCoin": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+      "sourceFeeAmount": "25000000",
+      "targetFeeCoin": "0x2::sui::SUI",
+      "targetFeeAmount": "148147231",
+      "isDeepFee": true,
+      "deepFeeAmount": "148147231"
+    },
+    "estimatedGasSui": "5000000",
+    "netProfit": "4648374666",
+    "roiPercentage": 46.48374666,
+    "executionRouteDescription": "Buy 0x2::sui::SUI on CETUS_CLMM [0xcetus_ch...] -> Swap back to 0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL on DEEPBOOK_V3 [0xdeepbook...]",
+    "healthCheckConfirmLogs": [
+      "Source Pool [0xcetus_chillbull_sui_pool_id] Status: Active (isPaused=false, isDestroyed=false)",
+      "Target Pool [0xdeepbook_chillbull_sui_pool_id] Status: Active (isPaused=false, isDestroyed=false)",
+      "Liquidity Threshold: Verified >= execution minimum",
+      "Gas Simulation (gRPC dryRun): 5000000 MIST"
+    ]
+  },
+  "allOpportunities": [
+    {
+      "targetCoin": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+      "sourcePool": {
+        "id": "0xcetus_chillbull_sui_pool_id",
+        "protocol": "CETUS_CLMM",
+        "coinA": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+        "coinB": "0x2::sui::SUI",
+        "reserveA": "1000000000000",
+        "reserveB": "15000000000000",
+        "feeBps": 25,
+        "health": {
+          "isPaused": false,
+          "isDestroyed": false,
+          "hasSufficientLiquidity": true,
+          "isVersionSupported": true,
+          "isValid": true
+        }
+      },
+      "targetPool": {
+        "id": "0xdeepbook_chillbull_sui_pool_id",
+        "protocol": "DEEPBOOK_V3",
+        "coinA": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+        "coinB": "0x2::sui::SUI",
+        "reserveA": "1000000000000",
+        "reserveB": "10000000000000",
+        "feeBps": 10,
+        "health": {
+          "isPaused": false,
+          "isDestroyed": false,
+          "hasSufficientLiquidity": true,
+          "isVersionSupported": true,
+          "isValid": true
+        },
+        "deepbookParams": {
+          "tickSize": "1000",
+          "lotSize": "1000000",
+          "minSize": "10000000"
+        },
+        "vaultBalances": {
+          "baseBalance": "1000000000000",
+          "quoteBalance": "10000000000000",
+          "deepBalance": "100000000000"
+        },
+        "midPrice": 10,
+        "bids": [
+          {
+            "price": 9.9,
+            "quantity": 1000
+          }
+        ],
+        "asks": [
+          {
+            "price": 10.1,
+            "quantity": 1000
+          }
+        ]
+      },
+      "optimalInputAmount": "10000000000",
+      "expectedOutputAmount": "14653374666",
+      "tradingFees": {
+        "sourceFeeCoin": "0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL",
+        "sourceFeeAmount": "25000000",
+        "targetFeeCoin": "0x2::sui::SUI",
+        "targetFeeAmount": "148147231",
+        "isDeepFee": true,
+        "deepFeeAmount": "148147231"
+      },
+      "estimatedGasSui": "5000000",
+      "netProfit": "4648374666",
+      "roiPercentage": 46.48374666,
+      "executionRouteDescription": "Buy 0x2::sui::SUI on CETUS_CLMM [0xcetus_ch...] -> Swap back to 0x7fb8f3f8730f78d656fb39f60bc9c090beae8e51b6a7ec26315ef98ecb856c3d::chillbull::CHILLBULL on DEEPBOOK_V3 [0xdeepbook...]",
+      "healthCheckConfirmLogs": [
+        "Source Pool [0xcetus_chillbull_sui_pool_id] Status: Active (isPaused=false, isDestroyed=false)",
+        "Target Pool [0xdeepbook_chillbull_sui_pool_id] Status: Active (isPaused=false, isDestroyed=false)",
+        "Liquidity Threshold: Verified >= execution minimum",
+        "Gas Simulation (gRPC dryRun): 5000000 MIST"
+      ]
+    }
+  ]
+}
